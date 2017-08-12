@@ -1,5 +1,6 @@
 # justluatools
 Just a bunch of libraries written in lua, written or found by me for my projects
+Installing: just clone this repository in your package.path (with keeping it's name)
 What is here:
 * **utf8_validator**
 	It is a validator of utf8, found in internet and optimized(but now it looks REALLY ugly, don't like it-use original version)
