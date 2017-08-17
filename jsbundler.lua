@@ -22,24 +22,26 @@ local function jsescape(str)
 end
 
 local gen
-gen=function(path,t)
+gen=function(path,t,h)
+	--print(type(h))
+	local modder=h.modder or function(a) return a end 
 	for name in lfs.dir(path) do
 		if name~='.' and name~='..' then
 			local fpath=path..'/'..urlescape(name)
 			--print(fpath)
 			if lfs.attributes(fpath).mode=='directory' then
 				t[name]={}
-				gen(fpath,t[name])
+				gen(fpath,t[name],h)
 			else
 				--print('reading file..')
 				local file=fastread(fpath)
 				--print('finished reading...')
 				if istext(file) then
 					--print('text..')
-					file='t'..file
+					file='t'..modder(file,fpath)
 				else
 					--print('binary..')
-					file='b'..base64.encode(file)
+					file='b'..base64.encode(modder(file,fpath))
 				end
 				t[name]=file
 			end
@@ -126,7 +128,7 @@ return function(conf)
 	local dir=conf.dir
 	local resp={}
 	--print('Beginning generation!')
-	gen(dir..'/',resp)
+	gen(dir..'/',resp,conf)
 	--print('Encoding!')
 	local jstr=json.encode(resp)
 	--print('Finished!')
